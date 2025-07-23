@@ -1,38 +1,196 @@
-.App {
-    text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for meat delivery app */
+.meat-gradient {
+  background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.meat-shadow {
+  box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.1), 0 2px 4px -1px rgba(220, 38, 38, 0.06);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.meat-hover {
+  transition: all 0.3s ease;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
+.meat-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px -3px rgba(220, 38, 38, 0.1), 0 4px 6px -2px rgba(220, 38, 38, 0.05);
+}
+
+/* Animation for adding items to cart */
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.bounce-in {
+  animation: bounceIn 0.5s ease-out;
+}
+
+/* Custom scrollbar for order lists */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}
+
+/* Product card animations */
+.product-card {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(220, 38, 38, 0.15);
+}
+
+/* Loading states */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #dc2626;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Button hover effects */
+.btn-primary {
+  @apply bg-red-600 text-white font-semibold py-2 px-4 rounded-lg;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  @apply bg-red-700;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  @apply bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  @apply bg-orange-700;
+  transform: translateY(-1px);
+}
+
+/* Form styling */
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  @apply outline-none border-red-500;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Dashboard cards */
+.dashboard-card {
+  @apply bg-white p-6 rounded-lg shadow-lg;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styling */
+.table-header {
+  @apply bg-red-50 text-red-700 font-semibold;
+}
+
+.table-row {
+  @apply border-b border-gray-200;
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  @apply bg-gray-50;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .mobile-hide {
+    display: none;
+  }
+  
+  .mobile-stack {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+  }
+  
+  .mobile-full {
+    width: 100%;
+  }
 }
 
-.App-link {
-    color: #61dafb;
+/* Status badges */
+.status-pending {
+  @apply bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-sm;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.status-completed {
+  @apply bg-green-200 text-green-800 px-2 py-1 rounded text-sm;
+}
+
+.status-cancelled {
+  @apply bg-red-200 text-red-800 px-2 py-1 rounded text-sm;
+}
+
+/* Image styling */
+.product-image {
+  transition: transform 0.3s ease;
+}
+
+.product-image:hover {
+  transform: scale(1.05);
+}
+
+/* Cart animation */
+.cart-badge {
+  @apply absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
