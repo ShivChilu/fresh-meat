@@ -65,7 +65,7 @@ class OrderItem(BaseModel):
 
 class Order(BaseModel):
     id: Optional[str] = None
-    customer_id: str
+    customer_id: Optional[str] = None
     items: List[OrderItem]
     total_amount: float
     status: str = "pending"
