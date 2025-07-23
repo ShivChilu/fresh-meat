@@ -191,6 +191,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "✅ TESTED: Dashboard statistics endpoint works correctly. Returns accurate counts for products, orders, and customers. Proper admin authorization enforced."
+        - working: true
+          agent: "testing"
+          comment: "✅ RE-TESTED: Admin dashboard statistics working perfectly after user modifications. Returns accurate counts (Products: 4, Orders: 3, Customers: 8) with proper admin authorization."
 
 frontend:
   - task: "Admin and customer login interfaces"
