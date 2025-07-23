@@ -195,6 +195,21 @@ async def get_all_orders(current_user: dict = Depends(verify_token)):
     
     return {"orders": orders}
 
+@app.get("/api/admin/customers")
+async def get_all_customers(current_user: dict = Depends(verify_token)):
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Get all customers but exclude password field for security
+    customers = list(db.customers.find({}, {"_id": 0, "password": 0}))
+    
+    # Add order count for each customer
+    for customer in customers:
+        order_count = db.orders.count_documents({"customer_id": customer["id"]})
+        customer["order_count"] = order_count
+    
+    return {"customers": customers}
+
 # Customer routes
 @app.post("/api/customer/register")
 async def customer_register(customer_data: CustomerRegister):
