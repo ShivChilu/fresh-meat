@@ -11,6 +11,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [dashboardStats, setDashboardStats] = useState({});
 
   // Login/Register forms state
