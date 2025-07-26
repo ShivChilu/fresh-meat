@@ -25,8 +25,12 @@ app.add_middleware(
 )
 
 # MongoDB connection
-MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+MONGO_URL = os.environ.get('MONGO_URL')
+if not MONGO_URL:
+    raise RuntimeError("Missing MONGO_URL environment variable")
+
 client = MongoClient(MONGO_URL)
+
 db = client.meat_delivery
 
 # JWT configuration
@@ -105,7 +109,9 @@ def init_admin():
         })
 
 # Initialize admin on startup
-init_admin()
+@app.on_event("startup")
+def startup_event():
+    init_admin()
 
 # Routes
 @app.get("/api/health")
