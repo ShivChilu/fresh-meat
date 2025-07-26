@@ -342,9 +342,9 @@ function App() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                  FreshMeat
+                  MakhMali
                 </h1>
-                <p className="text-xs text-gray-500">Premium Quality Delivered</p>
+                <p className="text-xs text-gray-500">Premium Quality Meat</p>
               </div>
             </div>
             
