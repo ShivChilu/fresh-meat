@@ -57,6 +57,9 @@ class Product(BaseModel):
     category: str
     image: str  # base64 encoded image
     stock: int
+    weight: Optional[str] = None
+    origin: Optional[str] = None
+    storage: Optional[str] = None
 
 class OrderItem(BaseModel):
     product_id: str
