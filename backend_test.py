@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 
 # Get backend URL from environment
-BACKEND_URL = "https://6fce49ee-68b0-4d5f-9f8e-78708adfd896.preview.emergentagent.com/api"
+BACKEND_URL = "https://6d905b01-de00-4c97-bf80-bafb04707101.preview.emergentagent.com/api"
 
 class MeatDeliveryAPITester:
     def __init__(self):
