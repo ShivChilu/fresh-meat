@@ -83,6 +83,9 @@ function App() {
       console.error('Error fetching customers:', error);
     }
   };
+
+  // Fetch orders for admin
+  const fetchOrders = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/admin/orders`, {
         headers: { 'Authorization': `Bearer ${token}` }
