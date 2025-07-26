@@ -277,3 +277,5 @@ agent_communication:
       message: "Running backend tests again after user modifications to ensure functionality is maintained."
     - agent: "testing"
       message: "✅ RE-TESTING COMPLETE: Backend functionality verified after user modifications. 14/15 tests passed (93.3% success rate). All core features working: admin login (shiv/123), customer auth, product management, order processing, dashboard stats. Minor issue: product delete fails due to null IDs in database, but all other CRUD operations work perfectly. Backend is fully functional."
+    - agent: "main"
+      message: "Fixed missing bcrypt dependency in backend and corrected fetchOrders function in frontend. All services restarted successfully. Backend health check passing. App is ready for use."
