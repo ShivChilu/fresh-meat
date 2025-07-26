@@ -16,6 +16,7 @@ function App() {
   const [customers, setCustomers] = useState([]);
   const [dashboardStats, setDashboardStats] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Login/Register forms state
   const [adminForm, setAdminForm] = useState({ username: '', password: '' });
@@ -301,7 +302,18 @@ function App() {
     localStorage.removeItem('customerName');
     setCurrentView('home');
     setCart([]);
+    setMobileMenuOpen(false);
   };
+
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  // Close mobile menu when view changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [currentView]);
 
   // Load data when views change
   useEffect(() => {
@@ -336,7 +348,8 @@ function App() {
               </div>
             </div>
             
-            <nav className="flex items-center space-x-4">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-4">
               {!token ? (
                 <>
                   <button 
@@ -420,7 +433,113 @@ function App() {
                 </>
               )}
             </nav>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button 
+                onClick={toggleMobileMenu}
+                className="text-gray-700 hover:text-red-600 focus:outline-none"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {mobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4">
+              <div className="flex flex-col space-y-3">
+                {!token ? (
+                  <>
+                    <button 
+                      onClick={() => setCurrentView('home')}
+                      className="text-left text-red-600 hover:text-red-800 font-medium transition-colors py-2"
+                    >
+                      Home
+                    </button>
+                    <button 
+                      onClick={() => setCurrentView('admin-login')}
+                      className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 text-center"
+                    >
+                      Admin Login
+                    </button>
+                    <button 
+                      onClick={() => setCurrentView('customer-login')}
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 text-center"
+                    >
+                      Customer Login
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {userType === 'admin' ? (
+                      <>
+                        <button 
+                          onClick={() => setCurrentView('admin-dashboard')}
+                          className="text-left text-red-600 hover:text-red-800 font-medium transition-colors py-2"
+                        >
+                          Dashboard
+                        </button>
+                        <button 
+                          onClick={() => setCurrentView('admin-products')}
+                          className="text-left text-red-600 hover:text-red-800 font-medium transition-colors py-2"
+                        >
+                          Products
+                        </button>
+                        <button 
+                          onClick={() => setCurrentView('admin-orders')}
+                          className="text-left text-red-600 hover:text-red-800 font-medium transition-colors py-2"
+                        >
+                          Orders
+                        </button>
+                        <button 
+                          onClick={() => setCurrentView('admin-customers')}
+                          className="text-left text-red-600 hover:text-red-800 font-medium transition-colors py-2"
+                        >
+                          Customers
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => setCurrentView('customer-products')}
+                          className="text-left text-orange-600 hover:text-orange-800 font-medium transition-colors py-2"
+                        >
+                          Products
+                        </button>
+                        <button 
+                          onClick={() => setCurrentView('customer-cart')}
+                          className="text-left text-orange-600 hover:text-orange-800 font-medium transition-colors py-2 relative"
+                        >
+                          Cart ({cart.length})
+                          {cart.length > 0 && (
+                            <span className="absolute -top-1 left-20 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                              {cart.length}
+                            </span>
+                          )}
+                        </button>
+                        <div className="text-gray-600 py-2">
+                          Welcome, {customerName}!
+                        </div>
+                      </>
+                    )}
+                    <button 
+                      onClick={handleLogout}
+                      className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-center"
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -430,50 +549,50 @@ function App() {
         {currentView === 'home' && (
           <div className="text-center">
             <div className="mb-16">
-              <h2 className="text-6xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-6">
+              <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-6">
                 Fresh Meat Delivered
               </h2>
-              <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                 Premium quality chicken, mutton, fish, and seafood delivered fresh to your doorstep. 
                 Experience the freshness that makes all the difference.
               </p>
-              <div className="flex justify-center space-x-6">
+              <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
                 <button 
                   onClick={() => setCurrentView('customer-login')}
-                  className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-red-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg"
+                  className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 md:px-10 py-3 md:py-4 rounded-full text-lg font-semibold hover:from-red-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg"
                 >
                   Shop Now
                 </button>
                 <button 
                   onClick={() => setCurrentView('admin-login')}
-                  className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-10 py-4 rounded-full text-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all transform hover:scale-105 shadow-lg"
+                  className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 md:px-10 py-3 md:py-4 rounded-full text-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all transform hover:scale-105 shadow-lg"
                 >
                   Admin Access
                 </button>
               </div>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-8 mt-16">
-              <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <div className="bg-gradient-to-r from-red-500 to-orange-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🥩</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="bg-gradient-to-r from-red-500 to-orange-500 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl md:text-3xl">🥩</span>
                 </div>
-                <h3 className="text-xl font-bold text-red-700 mb-4">Premium Quality</h3>
-                <p className="text-gray-600">Hand-selected, fresh meat cuts from trusted suppliers with quality guarantee</p>
+                <h3 className="text-lg md:text-xl font-bold text-red-700 mb-3 md:mb-4">Premium Quality</h3>
+                <p className="text-gray-600 text-sm md:text-base">Hand-selected, fresh meat cuts from trusted suppliers with quality guarantee</p>
               </div>
-              <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <div className="bg-gradient-to-r from-blue-500 to-cyan-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🚚</span>
+              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="bg-gradient-to-r from-blue-500 to-cyan-500 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl md:text-3xl">🚚</span>
                 </div>
-                <h3 className="text-xl font-bold text-blue-700 mb-4">Fast Delivery</h3>
-                <p className="text-gray-600">Same-day delivery available with temperature-controlled vehicles</p>
+                <h3 className="text-lg md:text-xl font-bold text-blue-700 mb-3 md:mb-4">Fast Delivery</h3>
+                <p className="text-gray-600 text-sm md:text-base">Same-day delivery available with temperature-controlled vehicles</p>
               </div>
-              <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <div className="bg-gradient-to-r from-cyan-500 to-blue-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">❄️</span>
+              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="bg-gradient-to-r from-cyan-500 to-blue-500 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl md:text-3xl">❄️</span>
                 </div>
-                <h3 className="text-xl font-bold text-cyan-700 mb-4">Fresh & Cold</h3>
-                <p className="text-gray-600">Maintained at optimal temperature from farm to your table</p>
+                <h3 className="text-lg md:text-xl font-bold text-cyan-700 mb-3 md:mb-4">Fresh & Cold</h3>
+                <p className="text-gray-600 text-sm md:text-base">Maintained at optimal temperature from farm to your table</p>
               </div>
             </div>
           </div>
@@ -482,12 +601,12 @@ function App() {
         {/* Admin Login */}
         {currentView === 'admin-login' && (
           <div className="max-w-md mx-auto">
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl">
               <div className="text-center mb-6">
-                <div className="bg-gradient-to-r from-red-500 to-orange-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="bg-gradient-to-r from-red-500 to-orange-500 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">👨‍💼</span>
                 </div>
-                <h2 className="text-2xl font-bold text-red-700">Admin Login</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-red-700">Admin Login</h2>
               </div>
               <form onSubmit={handleAdminLogin}>
                 <div className="mb-4">
@@ -524,12 +643,12 @@ function App() {
         {/* Customer Login */}
         {currentView === 'customer-login' && (
           <div className="max-w-md mx-auto">
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl">
               <div className="text-center mb-6">
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">👤</span>
                 </div>
-                <h2 className="text-2xl font-bold text-orange-700">Customer Login</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-orange-700">Customer Login</h2>
               </div>
               <form onSubmit={handleCustomerLogin}>
                 <div className="mb-4">
@@ -574,12 +693,12 @@ function App() {
         {/* Customer Register */}
         {currentView === 'customer-register' && (
           <div className="max-w-md mx-auto">
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl">
               <div className="text-center mb-6">
-                <div className="bg-gradient-to-r from-green-500 to-blue-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="bg-gradient-to-r from-green-500 to-blue-500 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">✨</span>
                 </div>
-                <h2 className="text-2xl font-bold text-green-700">Create Account</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-green-700">Create Account</h2>
               </div>
               <form onSubmit={handleCustomerRegister}>
                 <div className="mb-4">
@@ -645,50 +764,50 @@ function App() {
         {currentView === 'admin-dashboard' && userType === 'admin' && (
           <div>
             <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
                 Admin Dashboard
               </h2>
               <p className="text-gray-600">Manage your meat delivery business</p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-700">Total Products</h3>
-                  <div className="bg-gradient-to-r from-red-500 to-orange-500 p-3 rounded-full">
-                    <span className="text-white text-xl">📦</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all">
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <h3 className="text-base md:text-lg font-semibold text-gray-700">Total Products</h3>
+                  <div className="bg-gradient-to-r from-red-500 to-orange-500 p-2 md:p-3 rounded-full">
+                    <span className="text-white text-lg md:text-xl">📦</span>
                   </div>
                 </div>
-                <p className="text-3xl font-bold text-red-600">{dashboardStats.products_count || 0}</p>
-                <p className="text-sm text-gray-500 mt-2">Available in stock</p>
+                <p className="text-2xl md:text-3xl font-bold text-red-600">{dashboardStats.products_count || 0}</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2">Available in stock</p>
               </div>
               
-              <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-700">Total Orders</h3>
-                  <div className="bg-gradient-to-r from-green-500 to-blue-500 p-3 rounded-full">
-                    <span className="text-white text-xl">📋</span>
+              <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all">
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <h3 className="text-base md:text-lg font-semibold text-gray-700">Total Orders</h3>
+                  <div className="bg-gradient-to-r from-green-500 to-blue-500 p-2 md:p-3 rounded-full">
+                    <span className="text-white text-lg md:text-xl">📋</span>
                   </div>
                 </div>
-                <p className="text-3xl font-bold text-green-600">{dashboardStats.orders_count || 0}</p>
-                <p className="text-sm text-gray-500 mt-2">Orders processed</p>
+                <p className="text-2xl md:text-3xl font-bold text-green-600">{dashboardStats.orders_count || 0}</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2">Orders processed</p>
               </div>
               
-              <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-700">Total Customers</h3>
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-full">
-                    <span className="text-white text-xl">👥</span>
+              <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all">
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <h3 className="text-base md:text-lg font-semibold text-gray-700">Total Customers</h3>
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 md:p-3 rounded-full">
+                    <span className="text-white text-lg md:text-xl">👥</span>
                   </div>
                 </div>
-                <p className="text-3xl font-bold text-purple-600">{dashboardStats.customers_count || 0}</p>
-                <p className="text-sm text-gray-500 mt-2">Registered users</p>
+                <p className="text-2xl md:text-3xl font-bold text-purple-600">{dashboardStats.customers_count || 0}</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2">Registered users</p>
               </div>
             </div>
             
-            <div className="bg-white p-8 rounded-2xl shadow-xl">
-              <h3 className="text-2xl font-bold text-red-700 mb-6">Add New Product</h3>
-              <form onSubmit={handleAddProduct} className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl">
+              <h3 className="text-xl md:text-2xl font-bold text-red-700 mb-4 md:mb-6">Add New Product</h3>
+              <form onSubmit={handleAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
                   <input 
@@ -768,7 +887,7 @@ function App() {
                 <div className="md:col-span-2">
                   <button 
                     type="submit"
-                    className="bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 font-semibold"
+                    className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 md:px-8 py-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 font-semibold"
                   >
                     Add Product
                   </button>
@@ -782,34 +901,34 @@ function App() {
         {currentView === 'admin-products' && userType === 'admin' && (
           <div>
             <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
                 Product Management
               </h2>
               <p className="text-gray-600">Manage your product catalog</p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {products.map(product => (
                 <div key={product.id} className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all transform hover:scale-105">
                   <div className="relative">
                     <img 
                       src={product.image} 
                       alt={product.name}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-40 md:h-48 object-cover"
                     />
-                    <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded-full text-xs font-semibold">
+                    <div className="absolute top-2 md:top-4 right-2 md:right-4 bg-white px-1 md:px-2 py-0 md:py-1 rounded-full text-xs font-semibold">
                       Stock: {product.stock}
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-2">{product.name}</h3>
-                    <p className="text-gray-600 mb-3 text-sm">{product.description}</p>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-2xl font-bold text-red-600">₹{product.price}</span>
-                      <span className="text-sm text-gray-500">{product.weight}</span>
+                  <div className="p-4 md:p-6">
+                    <h3 className="text-base md:text-lg font-bold text-gray-800 mb-1 md:mb-2">{product.name}</h3>
+                    <p className="text-gray-600 mb-2 md:mb-3 text-xs md:text-sm">{product.description}</p>
+                    <div className="flex justify-between items-center mb-2 md:mb-3">
+                      <span className="text-xl md:text-2xl font-bold text-red-600">₹{product.price}</span>
+                      <span className="text-xs md:text-sm text-gray-500">{product.weight}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                      <span className="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 md:px-3 py-0 md:py-1 rounded-full text-xs md:text-sm font-semibold">
                         {product.category}
                       </span>
                       <span className="text-xs text-gray-500">
@@ -827,7 +946,7 @@ function App() {
         {currentView === 'admin-orders' && userType === 'admin' && (
           <div>
             <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
                 Order Management
               </h2>
               <p className="text-gray-600">Track and manage customer orders</p>
@@ -838,32 +957,32 @@ function App() {
                 <table className="w-full">
                   <thead className="bg-gradient-to-r from-red-500 to-orange-500 text-white">
                     <tr>
-                      <th className="px-6 py-4 text-left font-semibold">Order ID</th>
-                      <th className="px-6 py-4 text-left font-semibold">Customer</th>
-                      <th className="px-6 py-4 text-left font-semibold">Items</th>
-                      <th className="px-6 py-4 text-left font-semibold">Total</th>
-                      <th className="px-6 py-4 text-left font-semibold">Status</th>
-                      <th className="px-6 py-4 text-left font-semibold">Date</th>
+                      <th className="px-4 md:px-6 py-3 md:py-4 text-left font-semibold text-sm md:text-base">Order ID</th>
+                      <th className="px-4 md:px-6 py-3 md:py-4 text-left font-semibold text-sm md:text-base">Customer</th>
+                      <th className="px-4 md:px-6 py-3 md:py-4 text-left font-semibold text-sm md:text-base">Items</th>
+                      <th className="px-4 md:px-6 py-3 md:py-4 text-left font-semibold text-sm md:text-base">Total</th>
+                      <th className="px-4 md:px-6 py-3 md:py-4 text-left font-semibold text-sm md:text-base">Status</th>
+                      <th className="px-4 md:px-6 py-3 md:py-4 text-left font-semibold text-sm md:text-base">Date</th>
                     </tr>
                   </thead>
                   <tbody>
                     {orders.map((order, index) => (
                       <tr key={order.id} className={`border-b border-gray-200 hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                        <td className="px-6 py-4 text-sm font-mono">{order.id?.slice(0, 8)}...</td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-mono">{order.id?.slice(0, 8)}...</td>
+                        <td className="px-4 md:px-6 py-3 md:py-4">
                           <div>
-                            <div className="font-semibold">{order.customer?.name}</div>
-                            <div className="text-sm text-gray-600">{order.customer?.email}</div>
+                            <div className="font-semibold text-sm md:text-base">{order.customer?.name}</div>
+                            <div className="text-xs md:text-sm text-gray-600">{order.customer?.email}</div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm">{order.items?.length} items</td>
-                        <td className="px-6 py-4 font-semibold text-red-600 text-lg">₹{order.total_amount}</td>
-                        <td className="px-6 py-4">
-                          <span className="inline-block bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
+                        <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm">{order.items?.length} items</td>
+                        <td className="px-4 md:px-6 py-3 md:py-4 font-semibold text-red-600 text-base md:text-lg">₹{order.total_amount}</td>
+                        <td className="px-4 md:px-6 py-3 md:py-4">
+                          <span className="inline-block bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-semibold">
                             {order.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm text-gray-600">
                           {order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}
                         </td>
                       </tr>
@@ -879,27 +998,27 @@ function App() {
         {currentView === 'admin-customers' && userType === 'admin' && (
           <div>
             <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
                 Customer Management
               </h2>
               <p className="text-gray-600">View and manage your customers</p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {customers.map(customer => (
-                <div key={customer.id} className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all transform hover:scale-105">
-                  <div className="flex items-center mb-4">
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-12 h-12 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">
+                <div key={customer.id} className="bg-white rounded-2xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition-all transform hover:scale-105">
+                  <div className="flex items-center mb-3 md:mb-4">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-base md:text-lg">
                         {customer.name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-bold text-gray-800">{customer.name}</h3>
-                      <p className="text-sm text-gray-600">{customer.email}</p>
+                    <div className="ml-3 md:ml-4">
+                      <h3 className="text-base md:text-lg font-bold text-gray-800">{customer.name}</h3>
+                      <p className="text-xs md:text-sm text-gray-600">{customer.email}</p>
                     </div>
                   </div>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-1 md:space-y-2 text-xs md:text-sm">
                     <p className="text-gray-600">
                       <span className="font-semibold">Phone:</span> {customer.phone}
                     </p>
@@ -920,23 +1039,23 @@ function App() {
         {currentView === 'customer-products' && userType === 'customer' && (
           <div>
             {/* Search and Filter Section */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
-              <div className="flex flex-col md:flex-row gap-4 items-center">
-                <div className="flex-1">
+            <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6 md:mb-8">
+              <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center">
+                <div className="flex-1 w-full">
                   <input 
                     type="text"
                     placeholder="Search for chicken, mutton, fish..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   />
                 </div>
-                <div className="flex space-x-2 overflow-x-auto">
+                <div className="flex space-x-1 md:space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
                   {categories.map(category => (
                     <button
                       key={category.id}
                       onClick={() => setSelectedCategory(category.id)}
-                      className={`px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+                      className={`px-3 md:px-4 py-1 md:py-2 rounded-full whitespace-nowrap transition-all text-xs md:text-sm ${
                         selectedCategory === category.id 
                           ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white' 
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -949,40 +1068,40 @@ function App() {
               </div>
             </div>
 
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
+            <div className="text-center mb-6 md:mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
                 Fresh Meat Collection
               </h2>
               <p className="text-gray-600">Premium quality meat delivered fresh to your doorstep</p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredProducts.map(product => (
                 <div key={product.id} className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all transform hover:scale-105">
                   <div className="relative">
                     <img 
                       src={product.image} 
                       alt={product.name}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-40 md:h-48 object-cover"
                     />
-                    <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded-full text-xs font-semibold">
+                    <div className="absolute top-2 md:top-4 right-2 md:right-4 bg-white px-1 md:px-2 py-0 md:py-1 rounded-full text-xs font-semibold">
                       {product.weight || '500g'}
                     </div>
-                    <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                    <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white px-1 md:px-2 py-0 md:py-1 rounded-full text-xs font-semibold">
                       {product.category}
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-2">{product.name}</h3>
-                    <p className="text-gray-600 mb-4 text-sm">{product.description}</p>
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-2xl font-bold text-red-600">₹{product.price}</span>
-                      <span className="text-sm text-gray-500">Stock: {product.stock}</span>
+                  <div className="p-4 md:p-6">
+                    <h3 className="text-base md:text-lg font-bold text-gray-800 mb-1 md:mb-2">{product.name}</h3>
+                    <p className="text-gray-600 mb-2 md:mb-4 text-xs md:text-sm">{product.description}</p>
+                    <div className="flex justify-between items-center mb-3 md:mb-4">
+                      <span className="text-xl md:text-2xl font-bold text-red-600">₹{product.price}</span>
+                      <span className="text-xs md:text-sm text-gray-500">Stock: {product.stock}</span>
                     </div>
                     <button 
                       onClick={() => addToCart(product)}
                       data-product-id={product.id}
-                      className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 font-semibold"
+                      className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 md:py-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 font-semibold text-sm md:text-base"
                     >
                       Add to Cart
                     </button>
@@ -996,61 +1115,61 @@ function App() {
         {/* Customer Cart */}
         {currentView === 'customer-cart' && userType === 'customer' && (
           <div>
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
+            <div className="text-center mb-6 md:mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
                 Your Cart
               </h2>
               <p className="text-gray-600">Review your selected items</p>
             </div>
             
             {cart.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-4xl">🛒</span>
+              <div className="text-center py-12 md:py-16">
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                  <span className="text-3xl md:text-4xl">🛒</span>
                 </div>
-                <p className="text-gray-600 text-lg mb-6">Your cart is empty</p>
+                <p className="text-gray-600 text-base md:text-lg mb-4 md:mb-6">Your cart is empty</p>
                 <button 
                   onClick={() => setCurrentView('customer-products')}
-                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 font-semibold"
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 md:px-8 py-2 md:py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 font-semibold"
                 >
                   Continue Shopping
                 </button>
               </div>
             ) : (
               <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <div className="space-y-6">
+                <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 lg:p-8">
+                  <div className="space-y-4 md:space-y-6">
                     {cart.map(item => (
-                      <div key={item.product_id} className="flex justify-between items-center py-6 border-b border-gray-200">
+                      <div key={item.product_id} className="flex justify-between items-center py-3 md:py-4 lg:py-6 border-b border-gray-200">
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-                          <p className="text-gray-600">Quantity: {item.quantity}</p>
-                          <p className="text-sm text-gray-500">₹{item.price} per item</p>
+                          <h3 className="text-base md:text-lg font-semibold text-gray-800">{item.name}</h3>
+                          <p className="text-gray-600 text-xs md:text-sm">Quantity: {item.quantity}</p>
+                          <p className="text-xs text-gray-500">₹{item.price} per item</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-xl font-bold text-red-600">₹{(item.price * item.quantity).toFixed(2)}</p>
+                          <p className="text-lg md:text-xl font-bold text-red-600">₹{(item.price * item.quantity).toFixed(2)}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                   
-                  <div className="mt-8 pt-6 border-t border-gray-200">
-                    <div className="flex justify-between items-center mb-6">
-                      <span className="text-2xl font-bold text-gray-800">Total Amount:</span>
-                      <span className="text-3xl font-bold text-red-600">
+                  <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200">
+                    <div className="flex justify-between items-center mb-4 md:mb-6">
+                      <span className="text-xl md:text-2xl font-bold text-gray-800">Total Amount:</span>
+                      <span className="text-2xl md:text-3xl font-bold text-red-600">
                         ₹{cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
                       </span>
                     </div>
-                    <div className="flex space-x-4">
+                    <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4">
                       <button 
                         onClick={() => setCurrentView('customer-products')}
-                        className="flex-1 bg-gray-600 text-white py-4 rounded-lg hover:bg-gray-700 transition-all font-semibold"
+                        className="flex-1 bg-gray-600 text-white py-2 md:py-3 lg:py-4 rounded-lg hover:bg-gray-700 transition-all font-semibold"
                       >
                         Continue Shopping
                       </button>
                       <button 
                         onClick={placeOrder}
-                        className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105 font-semibold"
+                        className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-2 md:py-3 lg:py-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105 font-semibold"
                       >
                         Place Order
                       </button>
